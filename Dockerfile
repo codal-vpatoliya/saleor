@@ -50,4 +50,4 @@ USER django
 # Copy project
 COPY --chown=django:django . /code/
 EXPOSE 8000
-CMD ["bash", "docker/api.sh"]
+# CMD ["bash", "docker/api.sh"]
