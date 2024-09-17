@@ -50,4 +50,4 @@ RUN pip install -r requirements_dev.txt
 # Copy project
 COPY . /code/
 EXPOSE 8000
-#CMD ["bash", "/code/docker/api.sh"]
+CMD ["bash", "docker/api.sh"]
