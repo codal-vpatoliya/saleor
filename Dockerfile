@@ -48,6 +48,6 @@ RUN pip install -r requirements_dev.txt
 # RUN chmod -R 755 /home/django
 # USER django
 # Copy project
-# COPY --chown=django:django . /code/
+COPY . /code/
 EXPOSE 8000
-#CMD ["bash", "docker/api.sh"]
+#CMD ["bash", "/code/docker/api.sh"]
