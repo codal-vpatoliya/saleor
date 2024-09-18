@@ -485,23 +485,13 @@ class OrderEvent(ModelObjectType[models.OrderEvent]):
     @staticmethod
     def resolve_app(root: models.OrderEvent, info):
         requestor = get_user_or_app_from_context(info.context)
-
-        def _resolve_app(user):
-            check_is_owner_or_has_one_of_perms(
-                requestor,
-                user,
-                AppPermission.MANAGE_APPS,
-                OrderPermissions.MANAGE_ORDERS,
-            )
-            return (
-                AppByIdLoader(info.context).load(root.app_id) if root.app_id else None
-            )
-
-        if root.user_id:
-            return (
-                UserByUserIdLoader(info.context).load(root.user_id).then(_resolve_app)
-            )
-        return _resolve_app(None)
+        check_is_owner_or_has_one_of_perms(
+            requestor,
+            root.user,
+            AppPermission.MANAGE_APPS,
+            OrderPermissions.MANAGE_ORDERS,
+        )
+        return AppByIdLoader(info.context).load(root.app_id) if root.app_id else None
 
     @staticmethod
     def resolve_email(root: models.OrderEvent, _info):
@@ -1347,7 +1337,7 @@ class Order(ModelObjectType[models.Order]):
     undiscounted_shipping_price = graphene.Field(
         Money,
         description="Undiscounted total price of shipping." + ADDED_IN_319,
-        required=True,
+        required=False,
     )
     shipping_price = graphene.Field(
         TaxedMoney, description="Total price of shipping.", required=True
@@ -1741,10 +1731,7 @@ class Order(ModelObjectType[models.Order]):
     def resolve_undiscounted_shipping_price(root: models.Order, info):
         def _resolve_undiscounted_shipping_price(data):
             lines, manager = data
-            database_connection_name = get_database_connection_name(info.context)
-            return calculations.order_undiscounted_shipping(
-                root, manager, lines, database_connection_name=database_connection_name
-            )
+            return calculations.order_undiscounted_shipping(root, manager, lines)
 
         lines = OrderLinesByOrderIdLoader(info.context).load(root.id)
         manager = get_plugin_manager_promise(info.context)

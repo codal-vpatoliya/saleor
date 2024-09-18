@@ -263,13 +263,6 @@ OPTIONAL_PSP_REFERENCE_EVENTS = [
     TransactionEventType.CANCEL_FAILURE,
 ]
 
-OPTIONAL_AMOUNT_EVENTS = [
-    *FAILED_TRANSACTION_EVENTS,
-    TransactionEventType.REFUND_REVERSE,
-    TransactionEventType.CHARGE_BACK,
-    TransactionEventType.INFO,
-]
-
 
 class TokenizedPaymentFlow:
     """Represents possible tokenized payment flows that can be used to process payment.

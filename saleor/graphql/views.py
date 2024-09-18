@@ -161,18 +161,17 @@ class GraphQLView(View):
         # Add `child_of=span_ontext` to `start_active_span`
         with tracer.start_active_span("http") as scope:
             span = scope.span
-            span.set_tag("resource.name", request.path)
             span.set_tag(opentracing.tags.COMPONENT, "http")
             span.set_tag(opentracing.tags.HTTP_METHOD, request.method)
             span.set_tag(
                 opentracing.tags.HTTP_URL,
                 request.build_absolute_uri(request.get_full_path()),
             )
-            accepted_encoding = request.headers.get("accept-encoding", "")
+            accepted_encoding = request.META.get("HTTP_ACCEPT_ENCODING", "")
             span.set_tag(
                 "http.compression", "gzip" if "gzip" in accepted_encoding else "none"
             )
-            span.set_tag("http.useragent", request.headers.get("user-agent", ""))
+            span.set_tag("http.useragent", request.META.get("HTTP_USER_AGENT", ""))
             span.set_tag("span.type", "web")
 
             main_ip_header = settings.REAL_IP_ENVIRON[0]
@@ -278,7 +277,6 @@ class GraphQLView(View):
             _query_identifier = query_identifier(document)
             self._query = _query_identifier
             raw_query_string = document.document_string
-            span.set_tag("resource.name", raw_query_string)
             span.set_tag("graphql.query", raw_query_string)
             span.set_tag("graphql.query_identifier", _query_identifier)
             span.set_tag("graphql.query_fingerprint", query_fingerprint(document))

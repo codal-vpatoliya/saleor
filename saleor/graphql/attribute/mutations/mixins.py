@@ -45,9 +45,7 @@ class AttributeMixin:
 
         is_swatch_attr = attribute_input_type == AttributeInputType.SWATCH
 
-        slug_list = list(
-            attribute.values.values_list("slug", flat=True) if attribute.pk else []
-        )
+        slug_list = list(attribute.values.values_list("slug", flat=True))
 
         for value_data in values_input:
             cls._validate_value(attribute, value_data, is_swatch_attr, slug_list)
@@ -124,9 +122,7 @@ class AttributeMixin:
     @classmethod
     def check_values_are_unique(cls, values_input: dict, attribute: models.Attribute):
         # Check values uniqueness in case of creating new attribute.
-        existing_names = (
-            attribute.values.values_list("name", flat=True) if attribute.pk else []
-        )
+        existing_names = attribute.values.values_list("name", flat=True)
         existing_names = [name.lower().strip() for name in existing_names]
         for value_data in values_input:
             name = unidecode(value_data["name"]).lower().strip()

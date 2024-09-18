@@ -1063,7 +1063,6 @@ class Product(ChannelContextTypeWithMetadata[models.Product]):
 
     @staticmethod
     def resolve_tax_type(root: ChannelContext[models.Product], info):
-        @allow_writer_in_context(info.context)
         def with_tax_class(data):
             tax_class, manager = data
             tax_data = manager.get_tax_code_from_object_meta(
@@ -1726,7 +1725,6 @@ class ProductType(ModelObjectType[models.ProductType]):
 
     @staticmethod
     def resolve_tax_type(root: models.ProductType, info):
-        @allow_writer_in_context(info.context)
         def with_tax_class(data):
             tax_class, manager = data
             tax_data = manager.get_tax_code_from_object_meta(tax_class)

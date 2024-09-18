@@ -27,7 +27,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.vscode/
 
 # Exported results file
 django-queries-results.html

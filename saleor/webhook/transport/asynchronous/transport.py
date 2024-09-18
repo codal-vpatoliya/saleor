@@ -252,7 +252,6 @@ def trigger_webhooks_async(
     retry_backoff=10,
     retry_kwargs={"max_retries": 5},
 )
-@allow_writer()
 def send_webhook_request_async(self, event_delivery_id):
     delivery = get_delivery_for_webhook(event_delivery_id)
     if not delivery:
@@ -359,7 +358,6 @@ def send_observability_events(webhooks: list[WebhookData], events: list[bytes]):
 
 
 @app.task(queue=OBSERVABILITY_QUEUE_NAME)
-@allow_writer()
 def observability_send_events():
     with observability.opentracing_trace("send_events_task", "task"):
         if webhooks := observability.get_webhooks():
@@ -371,7 +369,6 @@ def observability_send_events():
 
 
 @app.task(queue=OBSERVABILITY_QUEUE_NAME)
-@allow_writer()
 def observability_reporter_task():
     with observability.opentracing_trace("reporter_task", "task"):
         if webhooks := observability.get_webhooks():

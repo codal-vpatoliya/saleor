@@ -15,7 +15,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: python:3.12
+    container: python:3.9
 
     services:
       postgres:

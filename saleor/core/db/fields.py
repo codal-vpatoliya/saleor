@@ -2,7 +2,6 @@ import json
 from typing import Callable
 
 from django.db.models import JSONField
-from django.db.models.expressions import Expression
 
 
 class SanitizedJSONField(JSONField):
@@ -20,6 +19,4 @@ class SanitizedJSONField(JSONField):
 
     def get_db_prep_save(self, value: dict, connection):
         """Sanitize the value for saving using the passed sanitizer."""
-        if isinstance(value, Expression):
-            return value
         return json.dumps(self._sanitizer_method(value))

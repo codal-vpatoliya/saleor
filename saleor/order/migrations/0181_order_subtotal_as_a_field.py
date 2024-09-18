@@ -31,21 +31,13 @@ def update_order_subtotals(apps, schema_editor):
             break
 
         order_line = OrderLine.objects.filter(order=OuterRef("pk"))
-        subtotal_net_sum = (
-            order_line.annotate(
-                net_sum=Func(F("total_price_net_amount"), function="Sum")
-            )
-            .values("net_sum")
-            .order_by()
-        )
+        subtotal_net_sum = order_line.annotate(
+            net_sum=Func(F("total_price_net_amount"), function="Sum")
+        ).values("net_sum")
 
-        subtotal_gross_sum = (
-            order_line.annotate(
-                gross_sum=Func(F("total_price_gross_amount"), function="Sum")
-            )
-            .values("gross_sum")
-            .order_by()
-        )
+        subtotal_gross_sum = order_line.annotate(
+            gross_sum=Func(F("total_price_gross_amount"), function="Sum")
+        ).values("gross_sum")
 
         orders_with_totals = Order.objects.filter(
             number__in=current_batch_order_numbers

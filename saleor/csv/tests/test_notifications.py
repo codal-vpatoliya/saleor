@@ -4,7 +4,7 @@ from django.core.files import File
 from freezegun import freeze_time
 
 from ...core.notification.utils import get_site_context
-from ...core.notify import AdminNotifyEvent
+from ...core.notify_events import AdminNotifyEvent
 from ...core.utils import build_absolute_uri
 from .. import notifications
 from ..notifications import get_default_export_payload
@@ -33,7 +33,6 @@ def test_send_export_download_link_notification(
 
     # when
     notifications.send_export_download_link_notification(user_export_file, data_type)
-
     # then
     expected_payload = {
         "export": get_default_export_payload(user_export_file),
@@ -42,15 +41,9 @@ def test_send_export_download_link_notification(
         "data_type": data_type,
         **get_site_context(),
     }
-
-    assert mocked_notify.call_count == 1
-    call_args = mocked_notify.call_args_list[0]
-    called_args = call_args.args
-    called_kwargs = call_args.kwargs
-    assert called_args[0] == AdminNotifyEvent.CSV_EXPORT_SUCCESS
-    assert len(called_kwargs) == 1
-    assert called_kwargs["payload_func"]() == expected_payload
-
+    mocked_notify.assert_called_once_with(
+        AdminNotifyEvent.CSV_EXPORT_SUCCESS, expected_payload
+    )
     mocked_gift_card_export_completed.assert_not_called()
     mocked_product_export_completed.assert_called_with(user_export_file)
 
@@ -87,13 +80,8 @@ def test_send_export_failed_info(
         **get_site_context(),
     }
 
-    assert mocked_notify.call_count == 1
-    call_args = mocked_notify.call_args_list[0]
-    called_args = call_args.args
-    called_kwargs = call_args.kwargs
-    assert called_args[0] == AdminNotifyEvent.CSV_EXPORT_FAILED
-    assert len(called_kwargs) == 1
-    assert called_kwargs["payload_func"]() == expected_payload
-
+    mocked_notify.assert_called_once_with(
+        AdminNotifyEvent.CSV_EXPORT_FAILED, expected_payload
+    )
     mocked_gift_card_export_completed.assert_called_once_with(user_export_file)
     mocked_product_export_completed.assert_not_called()

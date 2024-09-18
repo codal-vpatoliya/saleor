@@ -392,31 +392,17 @@ type Query {
 
     """Slug of the category"""
     slug: String
-
-    """
-    Language code of the category slug, omit to use primary slug.
-    
-    Added in Saleor 3.21.
-    """
-    slugLanguageCode: LanguageCodeEnum
   ): Category @doc(category: "Products")
 
   """
-  Look up a collection by ID or slug. If slugLanguageCode is provided, category will be fetched by slug translation. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS.
+  Look up a collection by ID. Requires one of the following permissions to include the unpublished items: MANAGE_ORDERS, MANAGE_DISCOUNTS, MANAGE_PRODUCTS.
   """
   collection(
     """ID of the collection."""
     id: ID
 
-    """Slug of the collection"""
+    """Slug of the category"""
     slug: String
-
-    """
-    Language code of the collection slug, omit to use primary slug.
-    
-    Added in Saleor 3.21.
-    """
-    slugLanguageCode: LanguageCodeEnum
 
     """Slug of a channel for which the data should be returned."""
     channel: String
@@ -470,13 +456,6 @@ type Query {
 
     """Slug of the product."""
     slug: String
-
-    """
-    Language code of the product slug, omit to use primary slug.
-    
-    Added in Saleor 3.21.
-    """
-    slugLanguageCode: LanguageCodeEnum
 
     """
     External ID of the product. 
@@ -722,13 +701,6 @@ type Query {
 
     """The slug of the page."""
     slug: String
-
-    """
-    Language code of the page slug, omit to use primary slug.
-    
-    Added in Saleor 3.21.
-    """
-    slugLanguageCode: LanguageCodeEnum
   ): Page @doc(category: "Pages")
 
   """List of the shop's pages."""
@@ -3268,6 +3240,7 @@ type Permission @doc(category: "Authentication") {
   name: String!
 }
 
+"""An enumeration."""
 enum PermissionEnum @doc(category: "Users") {
   MANAGE_USERS
   MANAGE_STAFF
@@ -3608,6 +3581,7 @@ input EventDeliveryFilterInput {
 
 scalar JSONString
 
+"""An enumeration."""
 enum WebhookSampleEventTypeEnum @doc(category: "Webhooks") {
   ACCOUNT_CONFIRMATION_REQUESTED
   ACCOUNT_CHANGE_EMAIL_REQUESTED
@@ -3995,6 +3969,7 @@ type ReducedRate @doc(category: "Taxes") {
   rateType: String!
 }
 
+"""An enumeration."""
 enum WarehouseClickAndCollectOptionEnum @doc(category: "Products") {
   DISABLED
   LOCAL
@@ -4233,6 +4208,7 @@ type ShippingMethodType implements Node & ObjectWithMetadata @doc(category: "Shi
   taxClass: TaxClass
 }
 
+"""An enumeration."""
 enum ShippingMethodTypeEnum @doc(category: "Shipping") {
   PRICE
   WEIGHT
@@ -4247,7 +4223,7 @@ type ShippingMethodTranslation implements Node @doc(category: "Shipping") {
   language: LanguageDisplay!
 
   """Translated shipping method name."""
-  name: String
+  name: String!
 
   """
   Translated description of the shipping method.
@@ -4272,6 +4248,7 @@ type LanguageDisplay {
   language: String!
 }
 
+"""An enumeration."""
 enum LanguageCodeEnum {
   AF
   AF_NA
@@ -5638,6 +5615,7 @@ type Weight {
   value: Float!
 }
 
+"""An enumeration."""
 enum WeightUnitsEnum {
   G
   LB
@@ -5917,6 +5895,7 @@ type ShippingMethodPostalCodeRule implements Node @doc(category: "Shipping") {
   inclusionType: PostalCodeRuleInclusionTypeEnum
 }
 
+"""An enumeration."""
 enum PostalCodeRuleInclusionTypeEnum @doc(category: "Shipping") {
   INCLUDE
   EXCLUDE
@@ -6315,6 +6294,7 @@ type ProductType implements Node & ObjectWithMetadata @doc(category: "Products")
   ): AttributeCountableConnection
 }
 
+"""An enumeration."""
 enum ProductTypeKindEnum @doc(category: "Products") {
   NORMAL
   GIFT_CARD
@@ -6576,6 +6556,7 @@ type Attribute implements Node & ObjectWithMetadata @doc(category: "Attributes")
   externalReference: String
 }
 
+"""An enumeration."""
 enum AttributeInputTypeEnum @doc(category: "Attributes") {
   DROPDOWN
   MULTISELECT
@@ -6590,17 +6571,20 @@ enum AttributeInputTypeEnum @doc(category: "Attributes") {
   DATE_TIME
 }
 
+"""An enumeration."""
 enum AttributeEntityTypeEnum @doc(category: "Attributes") {
   PAGE
   PRODUCT
   PRODUCT_VARIANT
 }
 
+"""An enumeration."""
 enum AttributeTypeEnum @doc(category: "Attributes") {
   PRODUCT_TYPE
   PAGE_TYPE
 }
 
+"""An enumeration."""
 enum MeasurementUnitsEnum {
   MM
   CM
@@ -7608,6 +7592,7 @@ type Image {
   alt: String
 }
 
+"""An enumeration."""
 enum ThumbnailFormatEnum {
   ORIGINAL
   AVIF
@@ -7627,13 +7612,6 @@ type CategoryTranslation implements Node @doc(category: "Products") {
 
   """Translated SEO description."""
   seoDescription: String
-
-  """
-  Translated category slug.
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
 
   """Translated category name."""
   name: String
@@ -7679,13 +7657,6 @@ type CategoryTranslatableContent implements Node @doc(category: "Products") {
 
   """SEO description to translate."""
   seoDescription: String
-
-  """
-  Slug to translate.
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
 
   """Name of the category translatable content."""
   name: String!
@@ -8166,6 +8137,7 @@ type ProductMedia implements Node & ObjectWithMetadata @doc(category: "Products"
   productId: ID
 }
 
+"""An enumeration."""
 enum ProductMediaType @doc(category: "Products") {
   IMAGE
   VIDEO
@@ -8636,13 +8608,6 @@ type CollectionTranslation implements Node @doc(category: "Products") {
   """Translated SEO description."""
   seoDescription: String
 
-  """
-  Translated collection slug.
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
-
   """Translated collection name."""
   name: String
 
@@ -8687,13 +8652,6 @@ type CollectionTranslatableContent implements Node @doc(category: "Products") {
 
   """SEO description to translate."""
   seoDescription: String
-
-  """
-  Slug to translate
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
 
   """Collection's name to translate."""
   name: String!
@@ -8756,13 +8714,6 @@ type ProductTranslation implements Node @doc(category: "Products") {
   """Translated SEO description."""
   seoDescription: String
 
-  """
-  Translated product slug.
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
-
   """Translated product name."""
   name: String
 
@@ -8807,13 +8758,6 @@ type ProductTranslatableContent implements Node @doc(category: "Products") {
 
   """SEO description to translate."""
   seoDescription: String
-
-  """
-  Slug to translate.
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
 
   """Product's name to translate."""
   name: String!
@@ -8941,13 +8885,6 @@ type PageTranslatableContent implements Node @doc(category: "Pages") {
   """SEO description to translate."""
   seoDescription: String
 
-  """
-  Slug to translate.
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
-
   """Page title to translate."""
   title: String!
 
@@ -8993,13 +8930,6 @@ type PageTranslation implements Node @doc(category: "Pages") {
 
   """Translated SEO description."""
   seoDescription: String
-
-  """
-  Translated page slug.
-  
-  Added in Saleor 3.21.
-  """
-  slug: String
 
   """Translated page title."""
   title: String
@@ -10929,15 +10859,8 @@ type Checkout implements Node & ObjectWithMetadata @doc(category: "Checkout") {
   """The shipping address of the checkout."""
   shippingAddress: Address
 
-  """
-  The customer note for the checkout. 
-  
-  Added in Saleor 3.21.
-  """
-  customerNote: String!
-
   """The note for the checkout."""
-  note: String! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `customerNote` instead.")
+  note: String!
 
   """
   The total discount applied to the checkout. Note: Only discount created via voucher are included in this field.
@@ -11359,6 +11282,7 @@ type GiftCardEvent implements Node @doc(category: "Gift cards") {
   oldExpiryDate: Date
 }
 
+"""An enumeration."""
 enum GiftCardEventsEnum @doc(category: "Gift cards") {
   ISSUED
   BOUGHT
@@ -11906,7 +11830,7 @@ type Order implements Node & ObjectWithMetadata @doc(category: "Orders") {
   
   Added in Saleor 3.19.
   """
-  undiscountedShippingPrice: Money!
+  undiscountedShippingPrice: Money
 
   """Total price of shipping."""
   shippingPrice: TaxedMoney!
@@ -12150,6 +12074,7 @@ type Order implements Node & ObjectWithMetadata @doc(category: "Orders") {
   totalRemainingGrant: Money!
 }
 
+"""An enumeration."""
 enum OrderStatus @doc(category: "Orders") {
   DRAFT
   UNCONFIRMED
@@ -12241,6 +12166,7 @@ type Fulfillment implements Node & ObjectWithMetadata @doc(category: "Orders") {
   totalRefundedAmount: Money
 }
 
+"""An enumeration."""
 enum FulfillmentStatus @doc(category: "Orders") {
   FULFILLED
   REFUNDED
@@ -12566,7 +12492,9 @@ type Invoice implements ObjectWithMetadata & Job & Node @doc(category: "Orders")
   """URL to view an invoice."""
   externalUrl: String @deprecated(reason: "This field will be removed in Saleor 4.0. Use `url` field.This field will be removed in 4.0")
 
-  """URL to view/download an invoice."""
+  """
+  URL to view/download an invoice. This can be an internal URL if the Invoicing Plugin was used or an external URL if it has been provided.
+  """
   url: String
 
   """
@@ -12591,6 +12519,7 @@ interface Job {
   message: String
 }
 
+"""An enumeration."""
 enum JobStatusEnum {
   PENDING
   SUCCESS
@@ -12598,6 +12527,7 @@ enum JobStatusEnum {
   DELETED
 }
 
+"""An enumeration."""
 enum OrderOriginEnum @doc(category: "Orders") {
   CHECKOUT
   DRAFT
@@ -12605,6 +12535,7 @@ enum OrderOriginEnum @doc(category: "Orders") {
   BULK_CREATE
 }
 
+"""An enumeration."""
 enum PaymentChargeStatusEnum @doc(category: "Payments") {
   NOT_CHARGED
   PENDING
@@ -12824,6 +12755,7 @@ type Transaction implements Node @doc(category: "Payments") {
   amount: Money
 }
 
+"""An enumeration."""
 enum TransactionKind @doc(category: "Payments") {
   EXTERNAL
   AUTH
@@ -12993,6 +12925,7 @@ enum OrderEventsEnum @doc(category: "Orders") {
   OTHER
 }
 
+"""An enumeration."""
 enum OrderEventsEmailsEnum @doc(category: "Orders") {
   PAYMENT_CONFIRMATION
   CONFIRMED
@@ -13073,6 +13006,7 @@ type OrderDiscount implements Node @doc(category: "Discounts") {
   amount: Money!
 }
 
+"""An enumeration."""
 enum OrderDiscountType @doc(category: "Discounts") {
   SALE
   VOUCHER
@@ -13106,6 +13040,7 @@ type OrderError @doc(category: "Orders") {
   addressType: AddressTypeEnum
 }
 
+"""An enumeration."""
 enum OrderErrorCode @doc(category: "Orders") {
   BILLING_ADDRESS_NOT_SET
   CANNOT_CANCEL_FULFILLMENT
@@ -13145,6 +13080,7 @@ enum OrderErrorCode @doc(category: "Orders") {
   NON_REMOVABLE_GIFT_LINE
 }
 
+"""An enumeration."""
 enum AddressTypeEnum {
   BILLING
   SHIPPING
@@ -13601,6 +13537,7 @@ type CustomerEvent implements Node @doc(category: "Users") {
   orderLine: OrderLine
 }
 
+"""An enumeration."""
 enum CustomerEventsEnum @doc(category: "Users") {
   ACCOUNT_CREATED
   ACCOUNT_ACTIVATED
@@ -13677,6 +13614,7 @@ type GiftCardSettings @doc(category: "Gift cards") {
   expiryPeriod: TimePeriod
 }
 
+"""An enumeration."""
 enum GiftCardSettingsExpiryTypeEnum @doc(category: "Gift cards") {
   NEVER_EXPIRE
   EXPIRY_PERIOD
@@ -13690,6 +13628,7 @@ type TimePeriod {
   type: TimePeriodTypeEnum!
 }
 
+"""An enumeration."""
 enum TimePeriodTypeEnum {
   DAY
   WEEK
@@ -14338,6 +14277,7 @@ type ConfigurationItem {
   label: String
 }
 
+"""An enumeration."""
 enum ConfigurationTypeFieldEnum {
   STRING
   MULTILINE
@@ -14646,6 +14586,7 @@ type Promotion implements Node & ObjectWithMetadata @doc(category: "Discounts") 
   events: [PromotionEvent!]
 }
 
+"""An enumeration."""
 enum PromotionTypeEnum @doc(category: "Discounts") {
   CATALOGUE
   ORDER
@@ -14744,11 +14685,13 @@ type PromotionRule implements Node @doc(category: "Discounts") {
   giftsLimit: Int
 }
 
+"""An enumeration."""
 enum RewardValueTypeEnum @doc(category: "Discounts") {
   FIXED
   PERCENTAGE
 }
 
+"""An enumeration."""
 enum RewardTypeEnum @doc(category: "Discounts") {
   SUBTOTAL_DISCOUNT
   GIFT
@@ -14797,6 +14740,7 @@ interface PromotionEventInterface {
   createdBy: UserOrApp
 }
 
+"""An enumeration."""
 enum PromotionEventsEnum @doc(category: "Discounts") {
   PROMOTION_CREATED
   PROMOTION_UPDATED
@@ -15096,6 +15040,7 @@ type ExportEvent implements Node {
   message: String!
 }
 
+"""An enumeration."""
 enum ExportEventsEnum {
   EXPORT_PENDING
   EXPORT_SUCCESS
@@ -17031,12 +16976,8 @@ type Mutation {
   Requires the following permissions: OWNER and HANDLE_PAYMENTS for apps, HANDLE_PAYMENTS for staff users. Staff user cannot update a transaction that is owned by the app.
   """
   transactionEventReport(
-    """
-    The amount of the event to report. 
-    
-    Required for all `REQUEST`, `SUCCESS`, `ACTION_REQUIRED`, and `ADJUSTMENT` events. For other events, the amount will be calculated based on the previous events with the same pspReference. If not possible to calculate, the mutation will return an error.
-    """
-    amount: PositiveDecimal
+    """The amount of the event to report."""
+    amount: PositiveDecimal!
 
     """List of all possible actions for the transaction"""
     availableActions: [TransactionActionEnum!]
@@ -19104,22 +19045,6 @@ type Mutation {
   ): CheckoutCustomerDetach @doc(category: "Checkout") @webhookEventsInfo(asyncEvents: [CHECKOUT_UPDATED], syncEvents: [])
 
   """
-  Updates customer note in the existing checkout object.
-  
-  Added in Saleor 3.21.
-  
-  Triggers the following webhook events:
-  - CHECKOUT_UPDATED (async): A checkout was updated.
-  """
-  checkoutCustomerNoteUpdate(
-    """New customer note content."""
-    customerNote: String!
-
-    """The checkout's ID."""
-    id: ID!
-  ): CheckoutCustomerNoteUpdate @doc(category: "Checkout") @webhookEventsInfo(asyncEvents: [CHECKOUT_UPDATED], syncEvents: [])
-
-  """
   Updates email address in the existing checkout object.
   
   Triggers the following webhook events:
@@ -20669,6 +20594,7 @@ type WebhookError @doc(category: "Webhooks") {
   code: WebhookErrorCode!
 }
 
+"""An enumeration."""
 enum WebhookErrorCode @doc(category: "Webhooks") {
   GRAPHQL_ERROR
   INVALID
@@ -20845,6 +20771,7 @@ type WebhookDryRunError @doc(category: "Webhooks") {
   code: WebhookDryRunErrorCode!
 }
 
+"""An enumeration."""
 enum WebhookDryRunErrorCode @doc(category: "Webhooks") {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -20884,6 +20811,7 @@ type WebhookTriggerError @doc(category: "Webhooks") {
   code: WebhookTriggerErrorCode!
 }
 
+"""An enumeration."""
 enum WebhookTriggerErrorCode @doc(category: "Webhooks") {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -20924,6 +20852,7 @@ type WarehouseError @doc(category: "Products") {
   shippingZones: [ID!]
 }
 
+"""An enumeration."""
 enum WarehouseErrorCode @doc(category: "Products") {
   ALREADY_EXISTS
   GRAPHQL_ERROR
@@ -21068,6 +20997,7 @@ type TaxClassCreateError @doc(category: "Taxes") {
   countryCodes: [String!]!
 }
 
+"""An enumeration."""
 enum TaxClassCreateErrorCode @doc(category: "Taxes") {
   GRAPHQL_ERROR
   INVALID
@@ -21117,6 +21047,7 @@ type TaxClassDeleteError @doc(category: "Taxes") {
   code: TaxClassDeleteErrorCode!
 }
 
+"""An enumeration."""
 enum TaxClassDeleteErrorCode @doc(category: "Taxes") {
   GRAPHQL_ERROR
   INVALID
@@ -21151,6 +21082,7 @@ type TaxClassUpdateError @doc(category: "Taxes") {
   countryCodes: [String!]!
 }
 
+"""An enumeration."""
 enum TaxClassUpdateErrorCode @doc(category: "Taxes") {
   DUPLICATED_INPUT_ITEM
   GRAPHQL_ERROR
@@ -21211,6 +21143,7 @@ type TaxConfigurationUpdateError @doc(category: "Taxes") {
   countryCodes: [String!]!
 }
 
+"""An enumeration."""
 enum TaxConfigurationUpdateErrorCode @doc(category: "Taxes") {
   DUPLICATED_INPUT_ITEM
   GRAPHQL_ERROR
@@ -21303,6 +21236,7 @@ type TaxCountryConfigurationUpdateError @doc(category: "Taxes") {
   taxClassIds: [String!]!
 }
 
+"""An enumeration."""
 enum TaxCountryConfigurationUpdateErrorCode @doc(category: "Taxes") {
   GRAPHQL_ERROR
   INVALID
@@ -21345,6 +21279,7 @@ type TaxCountryConfigurationDeleteError @doc(category: "Taxes") {
   code: TaxCountryConfigurationDeleteErrorCode!
 }
 
+"""An enumeration."""
 enum TaxCountryConfigurationDeleteErrorCode @doc(category: "Taxes") {
   GRAPHQL_ERROR
   INVALID
@@ -21378,6 +21313,7 @@ type TaxExemptionManageError @doc(category: "Taxes") {
   code: TaxExemptionManageErrorCode!
 }
 
+"""An enumeration."""
 enum TaxExemptionManageErrorCode @doc(category: "Taxes") {
   GRAPHQL_ERROR
   INVALID
@@ -21427,6 +21363,7 @@ type StockBulkUpdateError @doc(category: "Products") {
   code: StockBulkUpdateErrorCode!
 }
 
+"""An enumeration."""
 enum StockBulkUpdateErrorCode @doc(category: "Products") {
   GRAPHQL_ERROR
   INVALID
@@ -21488,6 +21425,7 @@ type ShopError @doc(category: "Shop") {
   code: ShopErrorCode!
 }
 
+"""An enumeration."""
 enum ShopErrorCode {
   ALREADY_EXISTS
   CANNOT_FETCH_TAX_RATES
@@ -21723,12 +21661,12 @@ type TranslationError {
   code: TranslationErrorCode!
 }
 
+"""An enumeration."""
 enum TranslationErrorCode {
   GRAPHQL_ERROR
   INVALID
   NOT_FOUND
   REQUIRED
-  UNIQUE
 }
 
 input ShopSettingsTranslationInput {
@@ -21773,6 +21711,7 @@ type OrderSettingsError @doc(category: "Orders") {
   code: OrderSettingsErrorCode!
 }
 
+"""An enumeration."""
 enum OrderSettingsErrorCode @doc(category: "Orders") {
   INVALID
 }
@@ -21813,6 +21752,7 @@ type GiftCardSettingsError @doc(category: "Gift cards") {
   code: GiftCardSettingsErrorCode!
 }
 
+"""An enumeration."""
 enum GiftCardSettingsErrorCode @doc(category: "Gift cards") {
   INVALID
   REQUIRED
@@ -21866,6 +21806,7 @@ type ShippingError @doc(category: "Shipping") {
   channels: [ID!]
 }
 
+"""An enumeration."""
 enum ShippingErrorCode @doc(category: "Shipping") {
   ALREADY_EXISTS
   GRAPHQL_ERROR
@@ -22179,6 +22120,7 @@ type ProductError @doc(category: "Products") {
   values: [ID!]
 }
 
+"""An enumeration."""
 enum ProductErrorCode @doc(category: "Products") {
   ALREADY_EXISTS
   ATTRIBUTE_ALREADY_ASSIGNED
@@ -22368,7 +22310,6 @@ type CategoryTranslate @doc(category: "Products") {
 }
 
 input TranslationInput {
-  slug: String
   seoTitle: String
   seoDescription: String
   name: String
@@ -22409,6 +22350,7 @@ type CollectionError @doc(category: "Products") {
   code: CollectionErrorCode!
 }
 
+"""An enumeration."""
 enum CollectionErrorCode @doc(category: "Products") {
   DUPLICATED_INPUT_ITEM
   GRAPHQL_ERROR
@@ -22916,6 +22858,7 @@ type ProductBulkCreateError @doc(category: "Products") {
   channels: [ID!]
 }
 
+"""An enumeration."""
 enum ProductBulkCreateErrorCode @doc(category: "Products") {
   ATTRIBUTE_ALREADY_ASSIGNED
   ATTRIBUTE_CANNOT_BE_ASSIGNED
@@ -23376,6 +23319,7 @@ type ProductBulkTranslateError {
   code: ProductTranslateErrorCode!
 }
 
+"""An enumeration."""
 enum ProductTranslateErrorCode @doc(category: "Products") {
   GRAPHQL_ERROR
   INVALID
@@ -23995,6 +23939,7 @@ type ProductVariantBulkError @doc(category: "Products") {
   channelListings: [ID!]
 }
 
+"""An enumeration."""
 enum ProductVariantBulkErrorCode @doc(category: "Products") {
   ATTRIBUTE_ALREADY_ASSIGNED
   ATTRIBUTE_CANNOT_BE_ASSIGNED
@@ -24252,6 +24197,7 @@ type StockError @doc(category: "Products") {
   code: StockErrorCode!
 }
 
+"""An enumeration."""
 enum StockErrorCode @doc(category: "Products") {
   ALREADY_EXISTS
   GRAPHQL_ERROR
@@ -24407,6 +24353,7 @@ type ProductVariantBulkTranslateError {
   code: ProductVariantTranslateErrorCode!
 }
 
+"""An enumeration."""
 enum ProductVariantTranslateErrorCode @doc(category: "Products") {
   GRAPHQL_ERROR
   INVALID
@@ -24517,6 +24464,7 @@ type PaymentError @doc(category: "Payments") {
   variants: [ID!]
 }
 
+"""An enumeration."""
 enum PaymentErrorCode @doc(category: "Payments") {
   BILLING_ADDRESS_NOT_SET
   GRAPHQL_ERROR
@@ -24654,6 +24602,7 @@ type TransactionCreateError @doc(category: "Payments") {
   code: TransactionCreateErrorCode!
 }
 
+"""An enumeration."""
 enum TransactionCreateErrorCode @doc(category: "Payments") {
   INVALID
   GRAPHQL_ERROR
@@ -24761,6 +24710,7 @@ type TransactionUpdateError @doc(category: "Payments") {
   code: TransactionUpdateErrorCode!
 }
 
+"""An enumeration."""
 enum TransactionUpdateErrorCode @doc(category: "Payments") {
   INVALID
   GRAPHQL_ERROR
@@ -24852,6 +24802,7 @@ type TransactionRequestActionError @doc(category: "Payments") {
   code: TransactionRequestActionErrorCode!
 }
 
+"""An enumeration."""
 enum TransactionRequestActionErrorCode @doc(category: "Payments") {
   INVALID
   GRAPHQL_ERROR
@@ -24886,6 +24837,7 @@ type TransactionRequestRefundForGrantedRefundError @doc(category: "Payments") {
   code: TransactionRequestRefundForGrantedRefundErrorCode!
 }
 
+"""An enumeration."""
 enum TransactionRequestRefundForGrantedRefundErrorCode @doc(category: "Payments") {
   INVALID
   GRAPHQL_ERROR
@@ -24932,13 +24884,13 @@ type TransactionEventReportError @doc(category: "Payments") {
   code: TransactionEventReportErrorCode!
 }
 
+"""An enumeration."""
 enum TransactionEventReportErrorCode @doc(category: "Payments") {
   INVALID
   GRAPHQL_ERROR
   NOT_FOUND
   INCORRECT_DETAILS
   ALREADY_EXISTS
-  REQUIRED
 }
 
 """
@@ -24976,6 +24928,7 @@ type PaymentGatewayConfigError @doc(category: "Payments") {
   code: PaymentGatewayConfigErrorCode!
 }
 
+"""An enumeration."""
 enum PaymentGatewayConfigErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -24995,6 +24948,7 @@ type PaymentGatewayInitializeError @doc(category: "Payments") {
   code: PaymentGatewayInitializeErrorCode!
 }
 
+"""An enumeration."""
 enum PaymentGatewayInitializeErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -25041,6 +24995,7 @@ type TransactionInitializeError @doc(category: "Payments") {
   code: TransactionInitializeErrorCode!
 }
 
+"""An enumeration."""
 enum TransactionInitializeErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -25081,6 +25036,7 @@ type TransactionProcessError @doc(category: "Payments") {
   code: TransactionProcessErrorCode!
 }
 
+"""An enumeration."""
 enum TransactionProcessErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -25137,6 +25093,7 @@ type PaymentMethodRequestDeleteError @doc(category: "Payments") {
   code: StoredPaymentMethodRequestDeleteErrorCode!
 }
 
+"""An enumeration."""
 enum StoredPaymentMethodRequestDeleteErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -25193,6 +25150,7 @@ type PaymentGatewayInitializeTokenizationError @doc(category: "Payments") {
   code: PaymentGatewayInitializeTokenizationErrorCode!
 }
 
+"""An enumeration."""
 enum PaymentGatewayInitializeTokenizationErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -25256,6 +25214,7 @@ type PaymentMethodInitializeTokenizationError @doc(category: "Payments") {
   code: PaymentMethodInitializeTokenizationErrorCode!
 }
 
+"""An enumeration."""
 enum PaymentMethodInitializeTokenizationErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -25301,6 +25260,7 @@ type PaymentMethodProcessTokenizationError @doc(category: "Payments") {
   code: PaymentMethodProcessTokenizationErrorCode!
 }
 
+"""An enumeration."""
 enum PaymentMethodProcessTokenizationErrorCode @doc(category: "Payments") {
   GRAPHQL_ERROR
   INVALID
@@ -25339,6 +25299,7 @@ type PageError @doc(category: "Pages") {
   values: [ID!]
 }
 
+"""An enumeration."""
 enum PageErrorCode @doc(category: "Pages") {
   GRAPHQL_ERROR
   INVALID
@@ -25486,7 +25447,6 @@ type PageTranslate @doc(category: "Pages") {
 }
 
 input PageTranslationInput {
-  slug: String
   seoTitle: String
   seoDescription: String
   title: String
@@ -26142,6 +26102,7 @@ type OrderGrantRefundCreateError @doc(category: "Orders") {
   lines: [OrderGrantRefundCreateLineError!]
 }
 
+"""An enumeration."""
 enum OrderGrantRefundCreateErrorCode @doc(category: "Orders") {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -26167,6 +26128,7 @@ type OrderGrantRefundCreateLineError {
   lineId: ID!
 }
 
+"""An enumeration."""
 enum OrderGrantRefundCreateLineErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -26270,6 +26232,7 @@ type OrderGrantRefundUpdateError @doc(category: "Orders") {
   removeLines: [OrderGrantRefundUpdateLineError!]
 }
 
+"""An enumeration."""
 enum OrderGrantRefundUpdateErrorCode @doc(category: "Orders") {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -26295,6 +26258,7 @@ type OrderGrantRefundUpdateLineError {
   lineId: ID!
 }
 
+"""An enumeration."""
 enum OrderGrantRefundUpdateLineErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -26514,6 +26478,7 @@ type OrderNoteAddError @doc(category: "Orders") {
   code: OrderNoteAddErrorCode
 }
 
+"""An enumeration."""
 enum OrderNoteAddErrorCode @doc(category: "Orders") {
   GRAPHQL_ERROR
   REQUIRED
@@ -26555,6 +26520,7 @@ type OrderNoteUpdateError @doc(category: "Orders") {
   code: OrderNoteUpdateErrorCode
 }
 
+"""An enumeration."""
 enum OrderNoteUpdateErrorCode @doc(category: "Orders") {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -26696,6 +26662,7 @@ type OrderBulkCreateError @doc(category: "Orders") {
   code: OrderBulkCreateErrorCode
 }
 
+"""An enumeration."""
 enum OrderBulkCreateErrorCode {
   GRAPHQL_ERROR
   REQUIRED
@@ -27013,6 +26980,7 @@ type MetadataError {
   code: MetadataErrorCode!
 }
 
+"""An enumeration."""
 enum MetadataErrorCode {
   GRAPHQL_ERROR
   INVALID
@@ -27073,6 +27041,7 @@ type MenuError @doc(category: "Menu") {
   code: MenuErrorCode!
 }
 
+"""An enumeration."""
 enum MenuErrorCode {
   CANNOT_ASSIGN_NODE
   GRAPHQL_ERROR
@@ -27334,6 +27303,7 @@ type InvoiceError @doc(category: "Orders") {
   code: InvoiceErrorCode!
 }
 
+"""An enumeration."""
 enum InvoiceErrorCode @doc(category: "Orders") {
   REQUIRED
   NOT_READY
@@ -27482,6 +27452,7 @@ type GiftCardError @doc(category: "Gift cards") {
   tags: [String!]
 }
 
+"""An enumeration."""
 enum GiftCardErrorCode @doc(category: "Gift cards") {
   ALREADY_EXISTS
   GRAPHQL_ERROR
@@ -27829,6 +27800,7 @@ type PluginError {
   code: PluginErrorCode!
 }
 
+"""An enumeration."""
 enum PluginErrorCode {
   GRAPHQL_ERROR
   INVALID
@@ -27876,6 +27848,7 @@ type ExternalNotificationError {
   code: ExternalNotificationErrorCodes!
 }
 
+"""An enumeration."""
 enum ExternalNotificationErrorCodes {
   REQUIRED
   INVALID_MODEL_TYPE
@@ -27946,6 +27919,7 @@ type PromotionCreateError {
   giftsLimitExceedBy: Int
 }
 
+"""An enumeration."""
 enum PromotionCreateErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -28113,6 +28087,7 @@ type PromotionUpdateError {
   code: PromotionUpdateErrorCode!
 }
 
+"""An enumeration."""
 enum PromotionUpdateErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -28164,6 +28139,7 @@ type PromotionDeleteError {
   code: PromotionDeleteErrorCode!
 }
 
+"""An enumeration."""
 enum PromotionDeleteErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -28211,6 +28187,7 @@ type PromotionRuleCreateError {
   giftsLimitExceedBy: Int
 }
 
+"""An enumeration."""
 enum PromotionRuleCreateErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -28319,6 +28296,7 @@ type PromotionRuleUpdateError {
   giftsLimitExceedBy: Int
 }
 
+"""An enumeration."""
 enum PromotionRuleUpdateErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -28427,6 +28405,7 @@ type PromotionRuleDeleteError {
   code: PromotionRuleDeleteErrorCode!
 }
 
+"""An enumeration."""
 enum PromotionRuleDeleteErrorCode {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -28522,6 +28501,7 @@ type DiscountError @doc(category: "Discounts") {
   voucherCodes: [String!]
 }
 
+"""An enumeration."""
 enum DiscountErrorCode @doc(category: "Discounts") {
   ALREADY_EXISTS
   GRAPHQL_ERROR
@@ -28962,6 +28942,7 @@ type VoucherCodeBulkDeleteError @doc(category: "Discounts") {
   voucherCodes: [ID!]
 }
 
+"""An enumeration."""
 enum VoucherCodeBulkDeleteErrorCode @doc(category: "Discounts") {
   GRAPHQL_ERROR
   NOT_FOUND
@@ -28999,6 +28980,7 @@ type ExportError {
   code: ExportErrorCode!
 }
 
+"""An enumeration."""
 enum ExportErrorCode {
   GRAPHQL_ERROR
   INVALID
@@ -29063,6 +29045,7 @@ enum ProductFieldEnum @doc(category: "Products") {
   VARIANT_MEDIA
 }
 
+"""An enumeration."""
 enum FileTypesEnum {
   CSV
   XLSX
@@ -29158,6 +29141,7 @@ type UploadError {
   code: UploadErrorCode!
 }
 
+"""An enumeration."""
 enum UploadErrorCode {
   GRAPHQL_ERROR
 }
@@ -29197,6 +29181,7 @@ type CheckoutError @doc(category: "Checkout") {
   addressType: AddressTypeEnum
 }
 
+"""An enumeration."""
 enum CheckoutErrorCode @doc(category: "Checkout") {
   BILLING_ADDRESS_NOT_SET
   CHECKOUT_NOT_FULLY_PAID
@@ -29413,6 +29398,7 @@ type CheckoutCreateFromOrderUnavailableVariant @doc(category: "Checkout") {
   lineId: ID!
 }
 
+"""An enumeration."""
 enum CheckoutCreateFromOrderUnavailableVariantErrorCode @doc(category: "Checkout") {
   NOT_FOUND
   PRODUCT_UNAVAILABLE_FOR_PURCHASE
@@ -29435,6 +29421,7 @@ type CheckoutCreateFromOrderError @doc(category: "Checkout") {
   code: CheckoutCreateFromOrderErrorCode!
 }
 
+"""An enumeration."""
 enum CheckoutCreateFromOrderErrorCode @doc(category: "Checkout") {
   GRAPHQL_ERROR
   INVALID
@@ -29467,21 +29454,6 @@ Triggers the following webhook events:
 - CHECKOUT_UPDATED (async): A checkout was updated.
 """
 type CheckoutCustomerDetach @doc(category: "Checkout") @webhookEventsInfo(asyncEvents: [CHECKOUT_UPDATED], syncEvents: []) {
-  """An updated checkout."""
-  checkout: Checkout
-  checkoutErrors: [CheckoutError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
-  errors: [CheckoutError!]!
-}
-
-"""
-Updates customer note in the existing checkout object.
-
-Added in Saleor 3.21.
-
-Triggers the following webhook events:
-- CHECKOUT_UPDATED (async): A checkout was updated.
-"""
-type CheckoutCustomerNoteUpdate @doc(category: "Checkout") @webhookEventsInfo(asyncEvents: [CHECKOUT_UPDATED], syncEvents: []) {
   """An updated checkout."""
   checkout: Checkout
   checkoutErrors: [CheckoutError!]! @deprecated(reason: "This field will be removed in Saleor 4.0. Use `errors` field instead.")
@@ -29751,6 +29723,7 @@ type OrderCreateFromCheckoutError @doc(category: "Orders") {
   lines: [ID!]
 }
 
+"""An enumeration."""
 enum OrderCreateFromCheckoutErrorCode @doc(category: "Orders") {
   GRAPHQL_ERROR
   CHECKOUT_NOT_FOUND
@@ -29801,6 +29774,7 @@ type ChannelError @doc(category: "Channels") {
   warehouses: [ID!]
 }
 
+"""An enumeration."""
 enum ChannelErrorCode @doc(category: "Channels") {
   ALREADY_EXISTS
   GRAPHQL_ERROR
@@ -30097,9 +30071,7 @@ type ChannelDelete @doc(category: "Channels") @webhookEventsInfo(asyncEvents: [C
 }
 
 input ChannelDeleteInput @doc(category: "Channels") {
-  """
-  ID of a channel to migrate orders from the origin channel. Target channel has to have the same currency as the origin.
-  """
+  """ID of channel to migrate orders from origin channel."""
   channelId: ID!
 }
 
@@ -30171,6 +30143,7 @@ type AttributeError @doc(category: "Attributes") {
   code: AttributeErrorCode!
 }
 
+"""An enumeration."""
 enum AttributeErrorCode @doc(category: "Attributes") {
   ALREADY_EXISTS
   GRAPHQL_ERROR
@@ -30456,6 +30429,7 @@ type AttributeBulkCreateError @doc(category: "Attributes") {
   code: AttributeBulkCreateErrorCode!
 }
 
+"""An enumeration."""
 enum AttributeBulkCreateErrorCode @doc(category: "Attributes") {
   ALREADY_EXISTS
   BLANK
@@ -30510,6 +30484,7 @@ type AttributeBulkUpdateError @doc(category: "Attributes") {
   code: AttributeBulkUpdateErrorCode!
 }
 
+"""An enumeration."""
 enum AttributeBulkUpdateErrorCode {
   ALREADY_EXISTS
   BLANK
@@ -30583,6 +30558,7 @@ type AttributeBulkTranslateError {
   code: AttributeTranslateErrorCode!
 }
 
+"""An enumeration."""
 enum AttributeTranslateErrorCode @doc(category: "Attributes") {
   GRAPHQL_ERROR
   INVALID
@@ -30725,6 +30701,7 @@ type AttributeValueBulkTranslateError {
   code: AttributeValueTranslateErrorCode!
 }
 
+"""An enumeration."""
 enum AttributeValueTranslateErrorCode @doc(category: "Attributes") {
   GRAPHQL_ERROR
   INVALID
@@ -30817,6 +30794,7 @@ type AppError @doc(category: "Apps") {
   permissions: [PermissionEnum!]
 }
 
+"""An enumeration."""
 enum AppErrorCode @doc(category: "Apps") {
   FORBIDDEN
   GRAPHQL_ERROR
@@ -31231,6 +31209,7 @@ type AccountError @doc(category: "Users") {
   addressType: AddressTypeEnum
 }
 
+"""An enumeration."""
 enum AccountErrorCode @doc(category: "Users") {
   ACTIVATE_OWN_ACCOUNT
   ACTIVATE_SUPERUSER_ACCOUNT
@@ -31421,6 +31400,7 @@ type SendConfirmationEmailError @doc(category: "Users") {
   code: SendConfirmationEmailErrorCode!
 }
 
+"""An enumeration."""
 enum SendConfirmationEmailErrorCode @doc(category: "Users") {
   INVALID
   ACCOUNT_CONFIRMED
@@ -31969,6 +31949,7 @@ type CustomerBulkUpdateError @doc(category: "Users") {
   code: CustomerBulkUpdateErrorCode!
 }
 
+"""An enumeration."""
 enum CustomerBulkUpdateErrorCode @doc(category: "Users") {
   BLANK
   DUPLICATED_INPUT_ITEM
@@ -32225,6 +32206,7 @@ type PermissionGroupError @doc(category: "Users") {
   channels: [ID!]
 }
 
+"""An enumeration."""
 enum PermissionGroupErrorCode @doc(category: "Users") {
   REQUIRED
   UNIQUE
@@ -32913,6 +32895,7 @@ type OrderBulkCreated implements Event @doc(category: "Orders") {
   orders: [Order!]
 }
 
+"""An enumeration."""
 enum DistanceUnitsEnum {
   MM
   CM
@@ -32924,6 +32907,7 @@ enum DistanceUnitsEnum {
   INCH
 }
 
+"""An enumeration."""
 enum AreaUnitsEnum {
   SQ_MM
   SQ_CM
@@ -32935,6 +32919,7 @@ enum AreaUnitsEnum {
   SQ_INCH
 }
 
+"""An enumeration."""
 enum VolumeUnitsEnum {
   CUBIC_MILLIMETER
   CUBIC_CENTIMETER
@@ -36423,19 +36408,6 @@ type TaxableObjectDiscount @doc(category: "Taxes") {
 
   """The amount of the discount."""
   amount: Money!
-
-  """
-  Indicates which part of the order the discount should affect: SUBTOTAL or SHIPPING.
-  """
-  type: TaxableObjectDiscountTypeEnum!
-}
-
-"""
-Indicates which part of the order the discount should affect: SUBTOTAL or SHIPPING.
-"""
-enum TaxableObjectDiscountTypeEnum @doc(category: "Taxes") {
-  SUBTOTAL
-  SHIPPING
 }
 
 type TaxableObjectLine @doc(category: "Taxes") {

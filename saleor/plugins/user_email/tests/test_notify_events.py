@@ -1,7 +1,6 @@
 from unittest import mock
 
 from ....account.notifications import get_default_user_payload
-from ....core.notify import NotifyHandler
 from ....order.notifications import (
     get_default_fulfillment_payload,
     get_default_order_payload,
@@ -40,9 +39,8 @@ def test_send_account_password_reset_event(
         "site_name": "Saleor",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_password_reset_event(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
+        payload=payload, config=config, plugin=user_email_plugin()
     )
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
@@ -65,9 +63,8 @@ def test_send_account_password_reset_event_with_empty_template(
         "site_name": "Saleor",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_password_reset_event(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(password_reset_template=""),
     )
@@ -88,9 +85,8 @@ def test_send_account_confirmation(mocked_email_task, customer_user, user_email_
         "site_name": "Saleor",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_confirmation(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
+        payload=payload, config=config, plugin=user_email_plugin()
     )
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
@@ -113,9 +109,8 @@ def test_send_account_confirmation_with_empty_template(
         "site_name": "Saleor",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_confirmation(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(account_confirmation_template=""),
     )
@@ -140,9 +135,8 @@ def test_send_account_change_email_request(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_change_email_request(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
+        payload=payload, config=config, plugin=user_email_plugin()
     )
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
@@ -167,9 +161,8 @@ def test_send_account_change_email_request_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_change_email_request(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(email_change_request_template=""),
     )
@@ -190,9 +183,8 @@ def test_send_account_change_email_confirm(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_change_email_confirm(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
+        payload=payload, config=config, plugin=user_email_plugin()
     )
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
@@ -213,9 +205,8 @@ def test_send_account_change_email_confirm_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_change_email_confirm(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(email_change_confirm_template=""),
     )
@@ -237,10 +228,7 @@ def test_send_account_delete(mocked_email_task, customer_user, user_email_plugin
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
-    send_account_delete(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
-    )
+    send_account_delete(payload=payload, config=config, plugin=user_email_plugin())
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
     )
@@ -263,9 +251,8 @@ def test_send_account_delete_with_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_delete(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(account_delete_template=""),
     )
@@ -288,9 +275,8 @@ def test_send_account_set_customer_password(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_set_customer_password(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
+        payload=payload, config=config, plugin=user_email_plugin()
     )
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
@@ -313,9 +299,8 @@ def test_send_account_set_customer_password_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_account_set_customer_password(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(account_set_password_template=""),
     )
@@ -335,10 +320,7 @@ def test_send_invoice(mocked_email_task, user_email_plugin):
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
-    send_invoice(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
-    )
+    send_invoice(payload=payload, config=config, plugin=user_email_plugin())
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
     )
@@ -357,9 +339,8 @@ def test_send_invoice_with_empty_template(mocked_email_task, user_email_plugin):
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_invoice(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(invoice_ready_template=""),
     )
@@ -377,10 +358,7 @@ def test_send_order_confirmation(mocked_email_task, order, user_email_plugin):
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
-    send_order_confirmation(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
-    )
+    send_order_confirmation(payload=payload, config=config, plugin=user_email_plugin())
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
     )
@@ -399,9 +377,8 @@ def test_send_order_confirmation_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_order_confirmation(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(order_confirmation_template=""),
     )
@@ -417,9 +394,8 @@ def test_send_fulfillment_confirmation(
 ):
     payload = get_default_fulfillment_payload(order, fulfillment)
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_fulfillment_confirmation(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
+        payload=payload, config=config, plugin=user_email_plugin()
     )
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
@@ -435,9 +411,8 @@ def test_send_fulfillment_confirmation_empty_template(
 ):
     payload = get_default_fulfillment_payload(order, fulfillment)
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_fulfillment_confirmation(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(fulfillment_confirmation_template=""),
     )
@@ -452,10 +427,7 @@ def test_send_fulfillment_update(
 ):
     payload = get_default_fulfillment_payload(order, fulfillment)
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
-    send_fulfillment_update(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
-    )
+    send_fulfillment_update(payload=payload, config=config, plugin=user_email_plugin())
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
     )
@@ -469,9 +441,8 @@ def test_send_fulfillment_update_empty_template(
 ):
     payload = get_default_fulfillment_payload(order, fulfillment)
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_fulfillment_update(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(fulfillment_update_template=""),
     )
@@ -499,9 +470,8 @@ def test_send_payment_confirmation(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_payment_confirmation(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
+        payload=payload, config=config, plugin=user_email_plugin()
     )
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
@@ -529,9 +499,8 @@ def test_send_payment_confirmation_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_payment_confirmation(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(payment_confirmation_template=""),
     )
@@ -549,10 +518,7 @@ def test_send_order_canceled(mocked_email_task, order, user_email_plugin):
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
-    send_order_canceled(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
-    )
+    send_order_canceled(payload=payload, config=config, plugin=user_email_plugin())
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
     )
@@ -571,9 +537,8 @@ def test_send_order_canceled_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_order_canceled(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(order_cancel_template=""),
     )
@@ -593,10 +558,7 @@ def test_send_order_refund(mocked_email_task, order, user_email_plugin):
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
-    send_order_refund(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
-    )
+    send_order_refund(payload=payload, config=config, plugin=user_email_plugin())
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
     )
@@ -617,9 +579,8 @@ def test_send_order_refund_with_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_order_refund(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(order_refund_template=""),
     )
@@ -637,10 +598,7 @@ def test_send_order_confirmed(mocked_email_task, order, user_email_plugin):
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
-    send_order_confirmed(
-        payload_func=handler.payload, config=config, plugin=user_email_plugin()
-    )
+    send_order_confirmed(payload=payload, config=config, plugin=user_email_plugin())
     mocked_email_task.assert_called_with(
         payload["recipient_email"], payload, config, mock.ANY, mock.ANY
     )
@@ -659,9 +617,8 @@ def test_send_order_confirmed_empty_template(
         "domain": "localhost:8000",
     }
     config = {"host": "localhost", "port": "1025"}
-    handler = NotifyHandler(lambda: payload)
     send_order_confirmed(
-        payload_func=handler.payload,
+        payload=payload,
         config=config,
         plugin=user_email_plugin(order_confirmed_template=""),
     )

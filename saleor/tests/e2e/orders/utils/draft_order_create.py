@@ -20,7 +20,6 @@ mutation OrderDraftCreate($input: DraftOrderCreateInput!) {
         code
         id
       }
-      voucherCode
       billingAddress {
         streetAddress1
       }

@@ -1,4 +1,5 @@
 import graphene
+from django.utils import timezone
 
 from ....core import ResolveInfo
 from ....core.doc_category import DOC_CATEGORY_AUTH
@@ -7,7 +8,6 @@ from ....core.mutations import BaseMutation
 from ....core.types import AccountError
 from ....plugins.dataloaders import get_plugin_manager_promise
 from ...types import User
-from .utils import update_user_last_login_if_required
 
 
 class ExternalObtainAccessTokens(BaseMutation):
@@ -49,9 +49,9 @@ class ExternalObtainAccessTokens(BaseMutation):
         setattr(info.context, "refresh_token", access_tokens_response.refresh_token)
 
         if access_tokens_response.user and access_tokens_response.user.id:
-            user = access_tokens_response.user
-            info.context._cached_user = user
-            update_user_last_login_if_required(user)
+            info.context._cached_user = access_tokens_response.user
+            access_tokens_response.user.last_login = timezone.now()
+            access_tokens_response.user.save(update_fields=["last_login", "updated_at"])
 
         return cls(
             token=access_tokens_response.token,

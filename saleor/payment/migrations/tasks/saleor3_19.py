@@ -2,7 +2,6 @@ from django.db import transaction
 from django.db.models import Exists, OuterRef
 
 from ....celeryconf import app
-from ....core.db.connection import allow_writer
 from ... import ChargeStatus
 from ...models import Payment
 
@@ -11,7 +10,6 @@ PAYMENT_BATCH_SIZE = 3000
 
 
 @app.task
-@allow_writer()
 def fix_invalid_atobarai_payments_task():
     """Fix the invalid payemnts for atobarai gateway.
 

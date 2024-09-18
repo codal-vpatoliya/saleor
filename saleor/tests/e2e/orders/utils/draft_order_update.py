@@ -12,38 +12,49 @@ mutation DraftOrderUpdate($input: DraftOrderInput!, $id: ID!) {
       id
       lines {
         totalPrice {
-          ...BaseTaxedMoney
+          gross {
+            amount
+          }
+          tax {
+            amount
+          }
         }
         unitPrice {
-          ...BaseTaxedMoney
+          gross {
+            amount
+          }
         }
         unitDiscountReason
       }
       subtotal {
-        ...BaseTaxedMoney
+        gross {
+          amount
+        }
+        net {
+          amount
+        }
+        tax {
+          amount
+        }
       }
       totalBalance {
         amount
       }
       total {
-        ...BaseTaxedMoney
+        gross {
+          amount
+        }
+        net {
+          amount
+        }
+        tax {
+          amount
+        }
       }
-      voucherCode
       voucher {
         id
         code
         discountValue
-      }
-      discounts {
-        id
-        type
-        name
-        valueType
-        value
-        reason
-        amount {
-          amount
-        }
       }
       billingAddress {
         firstName
@@ -75,10 +86,18 @@ mutation DraftOrderUpdate($input: DraftOrderInput!, $id: ID!) {
       }
       isShippingRequired
       shippingPrice {
-        ...BaseTaxedMoney
+        gross {
+          amount
+        }
+        net {
+          amount
+        }
+        tax {
+          amount
+        }
       }
-      undiscountedShippingPrice {
-        amount
+      shippingMethod {
+        id
       }
       shippingMethods {
         id
@@ -97,19 +116,6 @@ mutation DraftOrderUpdate($input: DraftOrderInput!, $id: ID!) {
       }
     }
   }
-}
-
-fragment BaseTaxedMoney on TaxedMoney {
-  gross {
-    amount
-  }
-  net {
-    amount
-  }
-  tax {
-    amount
-  }
-  currency
 }
 """
 

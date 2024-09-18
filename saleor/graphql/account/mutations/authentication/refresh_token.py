@@ -1,7 +1,10 @@
+from datetime import timedelta
 from typing import Optional
 
 import graphene
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from .....account.error_codes import AccountErrorCode
 from .....core.jwt import (
@@ -14,12 +17,7 @@ from ....core.doc_category import DOC_CATEGORY_AUTH
 from ....core.mutations import BaseMutation
 from ....core.types import AccountError
 from ...types import User
-from .utils import (
-    _does_token_match,
-    get_payload,
-    get_user,
-    update_user_last_login_if_required,
-)
+from .utils import _does_token_match, get_payload, get_user
 
 
 class RefreshToken(BaseMutation):
@@ -138,5 +136,11 @@ class RefreshToken(BaseMutation):
         user = get_user(payload)
         token = create_access_token(user, additional_payload=additional_payload)
         if user and not user.is_anonymous:
-            update_user_last_login_if_required(user)
+            time_now = timezone.now()
+            threshold_delta = timedelta(
+                seconds=settings.TOKEN_UPDATE_LAST_LOGIN_THRESHOLD
+            )
+            if not user.last_login or user.last_login + threshold_delta < time_now:
+                user.last_login = time_now
+                user.save(update_fields=["last_login", "updated_at"])
         return cls(errors=[], user=user, token=token)

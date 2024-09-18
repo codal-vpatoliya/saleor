@@ -7,7 +7,6 @@ from django.db.models import Exists, OuterRef, Q, QuerySet, Subquery
 from django.utils import timezone
 
 from ..celeryconf import app
-from ..core.db.connection import allow_writer
 from ..payment.models import TransactionItem
 from .models import Checkout, CheckoutLine
 
@@ -78,9 +77,7 @@ def delete_expired_checkouts(
         )
     )
 
-    qs: QuerySet[Checkout] = Checkout.objects.using(
-        settings.DATABASE_CONNECTION_REPLICA_NAME
-    ).filter(
+    qs: QuerySet[Checkout] = Checkout.objects.filter(
         (empty_checkouts | expired_anonymous_checkouts | expired_user_checkout)
         & ~Q(Exists(with_transactions))
     )
@@ -89,9 +86,7 @@ def delete_expired_checkouts(
     total_deleted: int = 0
     has_more: bool = True
     for batch_number in range(batch_count):
-        ids = list(qs.values_list("pk", flat=True))
-        with allow_writer():
-            deleted_count, _ = Checkout.objects.filter(pk__in=ids).delete()
+        deleted_count, _ = Checkout.objects.filter(pk__in=qs.values_list("pk")).delete()
         total_deleted += deleted_count
 
         # Stop deleting inactive checkouts if there was no match.

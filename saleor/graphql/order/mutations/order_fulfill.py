@@ -239,10 +239,7 @@ class OrderFulfill(BaseMutation):
         lines_ids = [line["order_line_id"] for line in lines]
         cls.check_lines_for_duplicates(lines_ids)
         order_lines = cls.get_nodes_or_error(
-            lines_ids,
-            field="lines",
-            only_type=OrderLine,
-            qs=order_models.OrderLine.objects.select_related("variant"),
+            lines_ids, field="lines", only_type=OrderLine
         )
 
         cls.clean_lines(order_lines, quantities_for_lines)
@@ -280,6 +277,7 @@ class OrderFulfill(BaseMutation):
             order,
             field="order",
             only_type=Order,
+            qs=order_models.Order.objects.prefetch_related("lines__variant"),
         )
         if not instance:
             # FIXME: order ID is optional but the code below will not work

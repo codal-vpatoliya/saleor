@@ -177,17 +177,16 @@ class EventPayload(models.Model):
 
     def get_payload(self):
         if self.payload_file:
-            with self.payload_file.open("rb") as f:
-                payload_data = f.read()
-                return payload_data.decode("utf-8")
+            with self.payload_file.open("rt") as f:
+                payload = f.read()
+                return payload
         return self.payload
 
     def save_payload_file(self, payload_data: str):
-        payload_bytes = payload_data.encode("utf-8")
         prefix = get_random_string(length=12)
         file_name = f"{self.pk}.json"
         file_path = safe_join(prefix, file_name)
-        self.payload_file.save(file_path, ContentFile(payload_bytes))
+        self.payload_file.save(file_path, ContentFile(payload_data))
 
 
 class EventDelivery(models.Model):

@@ -782,15 +782,11 @@ def test_send_fulfillment_order_lines_mails_by_user(
     expected_payload = get_default_fulfillment_payload(order, fulfillment)
     expected_payload["requester_user_id"] = to_global_id_or_none(staff_user)
     expected_payload["requester_app_id"] = None
-
-    assert mocked_notify.call_count == 1
-    call_args = mocked_notify.call_args_list[0]
-    called_args = call_args.args
-    called_kwargs = call_args.kwargs
-    assert called_args[0] == "order_fulfillment_confirmation"
-    assert len(called_kwargs) == 2
-    assert called_kwargs["payload_func"]() == expected_payload
-    assert called_kwargs["channel_slug"] == fulfilled_order.channel.slug
+    mocked_notify.assert_called_once_with(
+        "order_fulfillment_confirmation",
+        payload=expected_payload,
+        channel_slug=fulfilled_order.channel.slug,
+    )
 
 
 @patch("saleor.plugins.manager.PluginsManager.notify")
@@ -830,15 +826,11 @@ def test_send_fulfillment_order_lines_mails_by_app(
     expected_payload = get_default_fulfillment_payload(order, fulfillment)
     expected_payload["requester_user_id"] = None
     expected_payload["requester_app_id"] = to_global_id_or_none(app)
-
-    assert mocked_notify.call_count == 1
-    call_args = mocked_notify.call_args_list[0]
-    called_args = call_args.args
-    called_kwargs = call_args.kwargs
-    assert called_args[0] == "order_fulfillment_confirmation"
-    assert len(called_kwargs) == 2
-    assert called_kwargs["payload_func"]() == expected_payload
-    assert called_kwargs["channel_slug"] == fulfilled_order.channel.slug
+    mocked_notify.assert_called_once_with(
+        "order_fulfillment_confirmation",
+        payload=expected_payload,
+        channel_slug=fulfilled_order.channel.slug,
+    )
 
 
 @pytest.mark.parametrize(

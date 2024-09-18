@@ -67,7 +67,6 @@ class TransactionEventReportErrorCode(Enum):
     NOT_FOUND = "not_found"
     INCORRECT_DETAILS = "incorrect_details"
     ALREADY_EXISTS = "already_exists"
-    REQUIRED = "required"
 
 
 class PaymentGatewayConfigErrorCode(Enum):

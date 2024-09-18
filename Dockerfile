@@ -1,53 +1,67 @@
 ### Build and install packages
 FROM python:3.9 as build-python
-ENV PYTHONUNBUFFERED 1
-ENV PROJECT_VERSION="${PROJECT_VERSION}"
-ARG COMMIT_ID
-ARG PROJECT_VERSION
-# Set work directory
-WORKDIR /code
-# RUN groupadd -r django && useradd -r -m -g django django
-# RUN chown -R django:django /code
-# R0UN chmod -R 755 /code
+
 RUN apt-get -y update \
-    && apt-get install -y gettext \
-    # Cleanup apt cache
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-RUN apt-get update \
-    && apt-get install -y \
-    libcairo2 \
-    libgdk-pixbuf2.0-0 \
-    liblcms2-2 \
-    libopenjp2-7 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libssl3 \
-    libtiff6 \
-    libwebp7 \
-    libxml2 \
-    libpq5 \
-    shared-mime-info \
-    mime-support
-# Install of wkhtmltopdf already there above
-RUN apt-get install -y binutils libproj-dev gdal-bin libgdal-dev poppler-utils
-RUN apt-get install -y openssl libxml2-dev libxslt1-dev vim xvfb xauth xfonts-base xfonts-75dpi fontconfig libevent-dev
-RUN apt-get install -y wget libcairo2-dev libjpeg62-turbo-dev libpango1.0-dev libgif-dev build-essential g++
-RUN wget https://accis-package-public.s3.amazonaws.com/libjpeg-turbo8_2.0.3-0ubuntu1.20.04.1_amd64.deb
-RUN dpkg -i libjpeg-turbo8_2.0.3-0ubuntu1.20.04.1_amd64.deb
-RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-RUN dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-RUN wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.focal_amd64.deb
-RUN dpkg -i wkhtmltox_0.12.5-1.focal_amd64.deb
-RUN  apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y gettext \
+  # Cleanup apt cache
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
 # Install Python dependencies
-COPY requirements_dev.txt /code/
-RUN pip install -r requirements_dev.txt
-# RUN chown -R django:django /home/django
-# RUN chmod -R 755 /home/django
-# USER django
-# Copy project
-COPY . /code/
+WORKDIR /app
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pip pip install poetry==1.7.0
+RUN poetry config virtualenvs.create false
+COPY poetry.lock pyproject.toml /app/
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pypoetry poetry install --no-root
+
+### Final image
+FROM python:3.9-slim
+
+RUN groupadd -r saleor && useradd -r -g saleor saleor
+
+RUN apt-get update \
+  && apt-get install -y \
+  libcairo2 \
+  libgdk-pixbuf2.0-0 \
+  liblcms2-2 \
+  libopenjp2-7 \
+  libpango-1.0-0 \
+  libpangocairo-1.0-0 \
+  libssl3 \
+  libtiff6 \
+  libwebp7 \
+  libxml2 \
+  libpq5 \
+  shared-mime-info \
+  mime-support \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN echo 'image/webp webp' >> /etc/mime.types
+RUN echo 'image/avif avif' >> /etc/mime.types
+
+RUN mkdir -p /app/media /app/static \
+  && chown -R saleor:saleor /app/
+
+COPY --from=build-python /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
+COPY --from=build-python /usr/local/bin/ /usr/local/bin/
+COPY . /app
+WORKDIR /app
+
+ARG STATIC_URL
+ENV STATIC_URL ${STATIC_URL:-/static/}
+RUN SECRET_KEY=dummy STATIC_URL=${STATIC_URL} python3 manage.py collectstatic --no-input
+
 EXPOSE 8000
-CMD ["bash", "docker/api.sh"]
+ENV PYTHONUNBUFFERED 1
+
+LABEL org.opencontainers.image.title="saleor/saleor"                                  \
+      org.opencontainers.image.description="\
+A modular, high performance, headless e-commerce platform built with Python, \
+GraphQL, Django, and ReactJS."                                                         \
+      org.opencontainers.image.url="https://saleor.io/"                                \
+      org.opencontainers.image.source="https://github.com/saleor/saleor"               \
+      org.opencontainers.image.authors="Saleor Commerce (https://saleor.io)"           \
+      org.opencontainers.image.licenses="BSD 3"
+
+CMD ["gunicorn", "--bind", ":8000", "--workers", "4", "--worker-class", "saleor.asgi.gunicorn_worker.UvicornWorker", "saleor.asgi:application"]

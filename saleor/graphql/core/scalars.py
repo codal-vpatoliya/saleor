@@ -22,11 +22,10 @@ class Decimal(graphene.Float):
 
     @staticmethod
     def parse_literal(node):
-        if isinstance(node, (ast.FloatValue, ast.IntValue)):
-            try:
-                return decimal.Decimal(node.value)
-            except decimal.DecimalException:
-                return None
+        try:
+            return decimal.Decimal(node.value)
+        except decimal.DecimalException:
+            return None
 
     @staticmethod
     def parse_value(value):
@@ -34,14 +33,7 @@ class Decimal(graphene.Float):
             # Converting the float to str before parsing it to Decimal is
             # necessary to keep the decimal places as typed
             value = str(value)
-            value = decimal.Decimal(value)
-            if value.is_infinite():
-                return None
-            if value.is_nan():
-                return None
-            if value.is_subnormal():
-                return None
-            return value
+            return decimal.Decimal(value)
         except decimal.DecimalException:
             return None
 
@@ -54,7 +46,7 @@ class PositiveDecimal(Decimal):
 
     @staticmethod
     def parse_value(value):
-        value = Decimal.parse_value(value)
+        value = super(PositiveDecimal, PositiveDecimal).parse_value(value)
         if value and value < 0:
             return None
         return value
@@ -133,19 +125,19 @@ class WeightScalar(graphene.Scalar):
 class UUID(graphene.UUID):
     @staticmethod
     def serialize(uuid):
-        return graphene.UUID.serialize(uuid)
+        return super(UUID, UUID).serialize(uuid)
 
     @staticmethod
     def parse_literal(node):
         try:
-            return graphene.UUID.parse_literal(node)
+            return super(UUID, UUID).parse_literal(node)
         except ValueError:
             return None
 
     @staticmethod
     def parse_value(value):
         try:
-            return graphene.UUID.parse_value(value)
+            return super(UUID, UUID).parse_value(value)
         except ValueError:
             return None
 
@@ -161,7 +153,7 @@ class DateTime(graphene.DateTime):
 
     @staticmethod
     def parse_value(value):
-        parsed_value = graphene.DateTime.parse_value(value)
+        parsed_value = super(DateTime, DateTime).parse_value(value)
         if parsed_value is not None and isinstance(parsed_value, datetime):
             if parsed_value.year in [MINYEAR, MAXYEAR]:
                 try:
@@ -185,7 +177,7 @@ class Date(graphene.Date):
         # The current graphene version returning unhandled `IndexError`.
         if isinstance(value, str) and not value:
             return None
-        return graphene.Date.parse_value(value)
+        return super(Date, Date).parse_value(value)
 
 
 class Minute(graphene.Int):

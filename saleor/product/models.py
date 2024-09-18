@@ -41,7 +41,7 @@ from ..permission.enums import (
     ProductPermissions,
     ProductTypePermissions,
 )
-from ..seo.models import SeoModel, SeoModelTranslationWithSlug
+from ..seo.models import SeoModel, SeoModelTranslation
 from ..tax.models import TaxClass
 from . import ProductMediaTypes, ProductTypeKind, managers
 
@@ -87,7 +87,7 @@ class Category(ModelWithMetadata, MPTTModel, SeoModel):
         return self.name
 
 
-class CategoryTranslation(SeoModelTranslationWithSlug):
+class CategoryTranslation(SeoModelTranslation):
     category = models.ForeignKey(
         Category, related_name="translations", on_delete=models.CASCADE
     )
@@ -95,12 +95,6 @@ class CategoryTranslation(SeoModelTranslationWithSlug):
     description = SanitizedJSONField(blank=True, null=True, sanitizer=clean_editor_js)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["language_code", "slug"],
-                name="uniq_lang_slug_categorytransl",
-            ),
-        ]
         unique_together = (("language_code", "category"),)
 
     def __str__(self) -> str:
@@ -265,7 +259,7 @@ class Product(SeoModel, ModelWithMetadata, ModelWithExternalReference):
         return ["concatenated_values_order", "concatenated_values", "name"]
 
 
-class ProductTranslation(SeoModelTranslationWithSlug):
+class ProductTranslation(SeoModelTranslation):
     product = models.ForeignKey(
         Product, related_name="translations", on_delete=models.CASCADE
     )
@@ -273,12 +267,6 @@ class ProductTranslation(SeoModelTranslationWithSlug):
     description = SanitizedJSONField(blank=True, null=True, sanitizer=clean_editor_js)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["language_code", "slug"],
-                name="uniq_lang_slug_producttransl",
-            ),
-        ]
         unique_together = (("language_code", "product"),)
 
     def __str__(self) -> str:
@@ -721,7 +709,7 @@ class CollectionChannelListing(PublishableModel):
         ordering = ("pk",)
 
 
-class CollectionTranslation(SeoModelTranslationWithSlug):
+class CollectionTranslation(SeoModelTranslation):
     collection = models.ForeignKey(
         Collection, related_name="translations", on_delete=models.CASCADE
     )
@@ -729,12 +717,6 @@ class CollectionTranslation(SeoModelTranslationWithSlug):
     description = SanitizedJSONField(blank=True, null=True, sanitizer=clean_editor_js)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["language_code", "slug"],
-                name="uniq_lang_slug_collectiontransl",
-            ),
-        ]
         unique_together = (("language_code", "collection"),)
 
     def __repr__(self):

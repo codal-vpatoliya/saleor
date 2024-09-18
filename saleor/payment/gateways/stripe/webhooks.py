@@ -52,7 +52,7 @@ def handle_webhook(
     request: WSGIRequest, gateway_config: "GatewayConfig", channel_slug: str
 ):
     payload = request.body
-    sig_header = request.headers["stripe-signature"]
+    sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
     api_key = gateway_config.connection_params["secret_api_key"]
     endpoint_secret = gateway_config.connection_params.get("webhook_secret")
 
@@ -72,12 +72,12 @@ def handle_webhook(
     except ValueError as e:
         # Invalid payload
         logger.warning(
-            "Received invalid payload for Stripe webhook", extra={"error": str(e)}
+            "Received invalid payload for Stripe webhook", extra={"error": e}
         )
         return HttpResponse(status=400)
     except SignatureVerificationError as e:
         # Invalid signature
-        logger.warning("Invalid signature for Stripe webhook", extra={"error": str(e)})
+        logger.warning("Invalid signature for Stripe webhook", extra={"error": e})
         return HttpResponse(status=400)
 
     webhook_handlers = {
@@ -218,9 +218,7 @@ def _finalize_checkout(
             app=None,
         )
     except ValidationError as e:
-        logger.info(
-            "Failed to complete checkout %s.", checkout.pk, extra={"error": str(e)}
-        )
+        logger.info("Failed to complete checkout %s.", checkout.pk, extra={"error": e})
         return None
 
 

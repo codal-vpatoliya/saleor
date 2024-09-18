@@ -1,9 +1,10 @@
 from django.db.models import Q
 
+from ....plugins.manager import PluginsManager
 from ....tax.models import TaxClass
 
 
-def clean_tax_code(cleaned_input: dict):
+def clean_tax_code(cleaned_input: dict, manager: PluginsManager):
     """Clean deprecated `taxCode` field.
 
     This function provides backwards compatibility for the `taxCode` input field. If the

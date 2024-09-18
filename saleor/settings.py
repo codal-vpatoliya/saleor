@@ -1,3 +1,4 @@
+import ast
 import logging
 import os
 import os.path
@@ -16,7 +17,6 @@ import sentry_sdk
 import sentry_sdk.utils
 from celery.schedules import crontab
 from django.conf import global_settings
-from django.core.cache import CacheKeyWarning
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.utils import get_random_secret_key
 from django.core.validators import URLValidator
@@ -39,14 +39,13 @@ def get_list(text):
 
 
 def get_bool_from_env(name, default_value):
-    """Retrieve and convert an environment variable to a boolean object.
-
-    Accepted values are `true` (case-insensitive) and `1`, any other value resolves to `False`.
-    """
-    value = os.environ.get(name)
-    if value is None:
-        return default_value
-    return value.lower() in ("true", "1")
+    if name in os.environ:
+        value = os.environ[name]
+        try:
+            return ast.literal_eval(value)
+        except ValueError as e:
+            raise ValueError(f"{value} is an invalid value for {name}") from e
+    return default_value
 
 
 def get_url_from_env(name, *, schemes=None) -> Optional[str]:
@@ -93,9 +92,7 @@ INTERNAL_IPS = get_list(os.environ.get("INTERNAL_IPS", "127.0.0.1"))
 # Maximum time in seconds Django can keep the database connections opened.
 # Set the value to 0 to disable connection persistence, database connections
 # will be closed after each request.
-# For Django 4, the default value was changed to 0 as persistent DB connections
-# are not supported.
-DB_CONN_MAX_AGE = int(os.environ.get("DB_CONN_MAX_AGE", 0))
+DB_CONN_MAX_AGE = int(os.environ.get("DB_CONN_MAX_AGE", 600))
 
 DATABASE_CONNECTION_DEFAULT_NAME = "default"
 # TODO: For local envs will be activated in separate PR.
@@ -127,6 +124,7 @@ LANGUAGE_CODE = "en"
 LANGUAGES = CORE_LANGUAGES
 LOCALE_PATHS = [os.path.join(PROJECT_ROOT, "locale")]
 USE_I18N = True
+USE_L10N = True
 USE_TZ = True
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
@@ -252,9 +250,6 @@ ENABLE_RESTRICT_WRITER_MIDDLEWARE = get_bool_from_env(
 )
 if ENABLE_RESTRICT_WRITER_MIDDLEWARE:
     MIDDLEWARE = ["saleor.core.db.connection.log_writer_usage_middleware"] + MIDDLEWARE
-
-# Restrict inexplicit writer DB usage in Celery tasks
-CELERY_RESTRICT_WRITER_METHOD = "saleor.core.db.connection.log_writer_usage"
 
 INSTALLED_APPS = [
     # External apps that need to go before django's
@@ -789,6 +784,7 @@ BUILTIN_PLUGINS = [
     "saleor.payment.gateways.adyen.plugin.AdyenGatewayPlugin",
     "saleor.payment.gateways.authorize_net.plugin.AuthorizeNetGatewayPlugin",
     "saleor.payment.gateways.np_atobarai.plugin.NPAtobaraiGatewayPlugin",
+    "saleor.plugins.invoicing.plugin.InvoicingPlugin",
     "saleor.plugins.user_email.plugin.UserEmailPlugin",
     "saleor.plugins.admin_email.plugin.AdminEmailPlugin",
     "saleor.plugins.sendgrid.plugin.SendgridEmailPlugin",
@@ -990,6 +986,9 @@ ENABLE_LIMITING_WEBHOOKS_FOR_IDENTICAL_PAYLOADS = get_bool_from_env(
 TRANSACTION_ITEMS_LIMIT = 100
 
 
-# Disable Django warnings regarding too long cache keys being incompatible with
-# memcached to avoid leaking key values.
-warnings.filterwarnings("ignore", category=CacheKeyWarning)
+# The manager.perform_mutation method is deprecated and will be removed in Saleor 3.21.
+# It is enabled by default, but can be disabled by setting the environment variable to
+# False.
+ENABLE_DEPRECATED_MANAGER_PERFORM_MUTATION = get_bool_from_env(
+    "ENABLE_DEPRECATED_MANAGER_PERFORM_MUTATION", True
+)

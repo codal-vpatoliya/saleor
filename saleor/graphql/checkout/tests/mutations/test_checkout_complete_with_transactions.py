@@ -598,9 +598,6 @@ def test_checkout_price_override(
     assert order_line.tax_class_metadata == line_tax_class.metadata
     assert order_line.tax_class_private_metadata == line_tax_class.private_metadata
     assert order_line.is_price_overridden is True
-    assert (
-        order_line.undiscounted_unit_price_gross_amount == checkout_line.price_override
-    )
 
     assert order.shipping_address == address
     assert order.shipping_method == checkout.shipping_method
@@ -1303,15 +1300,16 @@ def test_checkout_complete(
 
     assert not len(Reservation.objects.all())
 
+    order_utils_log = caplog.records[1]
     assert (
         graphene.Node.to_global_id("Checkout", checkout_info.checkout.pk)
-        == caplog.records[0].checkout_id
+        == order_utils_log.checkout_id
     )
     assert gift_card.initial_balance_amount == Decimal(
-        caplog.records[0].gift_card_compensation
+        order_utils_log.gift_card_compensation
     )
     assert total.gross.amount == Decimal(
-        caplog.records[0].total_after_gift_card_compensation
+        order_utils_log.total_after_gift_card_compensation
     )
 
 
