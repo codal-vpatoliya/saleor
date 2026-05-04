@@ -149,7 +149,7 @@ types-pytz = "^2024.1.0"
 types-redis = "^4.6.0"
 types-requests = "^2.31.0"
 types-six = "^1.16.17"
-vcrpy = ">=4.0,<7.0"
+vcrpy = ">=7.0.0,<8.0"
 
 [tool.deptry]
 extend_exclude = [ "conftest\\.py", ".*/conftest\\.py", ".*/tests/.*" ]
